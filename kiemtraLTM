@@ -1,0 +1,232 @@
+
+/// TCP- BYTESTREAM////
+import java.util.*;
+import java.net.*;
+import java.io.*;
+
+public class tongdayso {
+    public static void main(String[] args) throws Exception{
+        Socket sk = new Socket("203.162.10.109",2206);
+        InputStream in = sk.getInputStream();
+        OutputStream out = sk.getOutputStream();   
+
+        String code = "B22DCVT023;FQyeymQw";
+        out.write(code.getBytes());
+        out.flush();
+
+        byte[] buffer = new byte[1024];
+        int bytesRead = in.read(buffer);
+        String s = new String(buffer,0,bytesRead);
+        System.out.println(s);
+        int tong =0;
+        String [] tmp = s.trim().split("\\|");
+        for(String x : tmp) {
+            x = x.trim();
+            if (!x.isEmpty()) {        // bỏ qua phần tử rỗng
+                tong += Integer.parseInt(x);
+            }
+        }
+        System.out.println(tong);
+        out.write(String.valueOf(tong).getBytes());
+        out.flush();
+    }
+}
+
+//// TCP DATASTREAM ////
+import java.io.*;
+import java.net.*;
+public class UCLNVaBCNN {
+    public static int UCLN(int a, int b){
+        while(b!=0){
+            int tmp = a%b;
+            a = b;
+            b = tmp;
+        }
+        return a;
+    }
+    public static void main(String[] args) throws IOException{
+        Socket socket = new Socket("172.188.19.218", 1605);
+        DataInputStream in = new DataInputStream(socket.getInputStream());
+        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+        String code = "B21DCCN799;JKT5DjN";
+        out.writeUTF(code);
+        out.flush();
+        int a = in.readInt(), b = in.readInt();
+        int ucln = UCLN(a, b);
+        int bcnn = a * b/ucln;
+        out.writeInt(ucln);
+        out.writeInt(bcnn);
+        out.flush();
+        in.close();
+        out.close();
+        socket.close();
+    }
+}
+
+////TCP CHARACTER STREAM ////
+import java.io.*;
+import java.net.*;
+import java.util.*;
+public class Dem {
+    public static void main(String[] args) throws IOException{
+        Socket socket = new Socket("203.162.10.109", 2208);
+        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        String code = "B21DCCN222;CVkVQheX";
+        bw.write(code);
+        bw.newLine();
+        bw.flush();
+        String s = br.readLine();
+        System.out.println(s);
+        int[] cnt = new int[256]; 
+        for (char x : s.toCharArray()) {
+            if (Character.isLetter(x)||Character.isDigit(x)) cnt[x]++;
+        }
+        String ans = "";
+        for(char x: s.toCharArray()){
+            if(cnt[x]>=2){
+                ans += x + ":" + cnt[x] + ",";
+                cnt[x] = 0;
+            }
+        }
+        System.out.println(ans);
+        bw.write(ans);
+        bw.newLine();
+        bw.flush();
+        socket.close();
+    }
+}
+
+
+///UDP DANG1////
+mport java.io.*;
+import java.math.BigInteger;
+import java.net.*;
+import java.util.*;
+public class Sapxepthutunguoc {
+    public static void main(String[] args) throws Exception{
+        DatagramSocket sk = new DatagramSocket();
+        InetAddress sA = InetAddress.getByName("203.162.10.109");
+        int sP = 2207;
+        
+        String code = ";B22DCVT023;XQWKSOY1";
+        DatagramPacket dpgui = new DatagramPacket(code.getBytes(),code.length(),sA,sP);
+        sk.send(dpgui);
+
+        byte[] buffer = new byte[1024];
+        DatagramPacket dpnhan = new DatagramPacket(buffer , buffer.length);
+        sk.receive(dpnhan);
+        String tmp = new String(dpnhan.getData()).trim();
+
+        String[] tmp1 = tmp.trim().split(";");
+        String rqid = tmp1[0];
+        String[] tmp2 = tmp1[1].trim().split(",");
+        TreeMap<Integer, String> sortedMap = new TreeMap<>();
+        String res = ""+ rqid + ";";
+        for (String x : tmp2) {
+            // Mỗi segment là "value:index"
+            String[] valueIndex = x.split(":");
+            if (valueIndex.length != 2) continue;
+
+            String value = valueIndex[0];             // e.g., veM3xgA1g
+            int index = Integer.parseInt(valueIndex[1]);  // e.g., 4
+
+            sortedMap.put(index, value);  // tự động sắp theo index
+        }
+        for(String val : sortedMap.values()) res += val+ ",";
+        System.out.println(res.substring(0,res.length()-1));
+        DatagramPacket dpGui1 = new DatagramPacket(res.getBytes(), res.length()-1, sA, sP);
+        sk.send(dpGui1);
+        sk.close();
+    }
+}
+
+
+///TCP OBJECT///
+package TCP;
+import java.io.Serializable;
+public class Customer implements Serializable {
+    private static final long serialVersionUID = 20170711L; // Theo yêu cầu của đề bài
+    private int id;
+    private String code, name, dayOfBirth, userName;
+    public Customer(int id, String code, String name, String dayOfBirth, String userName) {
+        this.id = id;
+        this.code = code;
+        this.name = name;
+        this.dayOfBirth = dayOfBirth;
+        this.userName = userName;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getDayOfBirth() {
+        return dayOfBirth;
+    }
+    public void setDayOfBirth(String dayOfBirth) {
+        this.dayOfBirth = dayOfBirth;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", dayOfBirth='" + dayOfBirth + '\'' +
+                ", userName='" + userName + '\'' +
+                '}';
+    }
+}
+
+package TCP;
+
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import TCP.Customer;
+public class khachhang {
+    public static void main(String[] args) throws Exception{
+        // Kết nối tới server
+        Socket socket = new Socket("203.162.10.109", 2209);
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        
+        // a. Gửi mã sinh viên và mã câu hỏi
+        String code = "B22DCVT023;xlFJeMTh";
+        out.writeObject(code);
+        out.flush();
+        // b. Nhận đối tượng Customer từ server
+        Customer customer = (Customer) in.readObject();
+        System.out.println(customer);
+        // c. Chuẩn hóa thông tin khách hàng
+        //Chuẩn hoá tên
+        String []tenTmp = customer.getName().split("\\s+");
+        String tenMoi = "";
+        tenMoi+=tenTmp[tenTmp.length - 1].toUpperCase()+", ";
+        for(int i = 0;i<tenTmp.length - 1;i++) tenMoi+=Character.toUpperCase(tenTmp[i].charAt(0)) + tenTmp[i].substring(1).toLowerCase() + " ";
+        customer.setName(tenMoi.trim());
+        //Chuẩn hoá ngày sinh
+        String []nsTmp = customer.getDayOfBirth().split("-");
+        String nsMoi = nsTmp[1] + "/" + nsTmp[0] + "/" + nsTmp[2];
+        customer.setDayOfBirth(nsMoi);
+        //Tạo username
+        String userMoi = "";
+        for(int i = 0;i<tenTmp.length - 1;i++) userMoi+=Character.toLowerCase(tenTmp[i].charAt(0));
+        userMoi+=tenTmp[tenTmp.length - 1].toLowerCase();
+        customer.setUserName(userMoi);
+        // d. Gửi lại đối tượng đã được sửa đổi
+        System.out.println(customer);
+        out.writeObject(customer);
+        out.flush();
+        in.close();
+        out.close();
+        socket.close();
+    }
+
+    
+}
